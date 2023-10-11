@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using SocketTcpServer.Controllers;
 
 Console.WindowHeight = 20;
 Console.WindowWidth = 60;
@@ -41,6 +42,9 @@ void TcpServer(int port, IPAddress ip) {
     // SocketType.Stream          - работаем с пакетами 
     // ProtocolType.Tcp           - протокол транспортного уровня    TCP/IP -- DARPA    IPX/SPX -- Novell
     var listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+    // Контроллер серверных операций
+    var serverController = new ServerController();
 
     try {
         // привязка сокета к конечной точке
@@ -92,17 +96,14 @@ void TcpServer(int port, IPAddress ip) {
 
                 // pwd – возвращает полное имя папки App_Files приложения
                 case "pwd":
-                var path = $"{Environment.CurrentDirectory}\\App_Files";
-                answer = Directory.Exists(path)
-                    ? path
-                    : "not found";
+                answer = serverController.Pwd();
                 break;
 
                 // list ¬– клиент получает список имен файлов, хранящихся
                 // на сервере, в папке App_Files (в папке исполняемого файла),
                 // имена файлов разделены строкой “\n”
                 case "list":
-                path = $"{Environment.CurrentDirectory}\\App_Files";
+                var path = $"{Environment.CurrentDirectory}\\App_Files";
                 answer = Directory.Exists(path)
                     ? string.Join("\n", Directory.GetFiles(path)
                         .Select(f => Path.GetFileName(f)!)
