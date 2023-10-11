@@ -1,9 +1,12 @@
-﻿using System.Net;
+﻿using System.Data.SqlTypes;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
 Console.Title = "--- TCP Socket Client ---";
 
+(Console.ForegroundColor, Console.BackgroundColor) = (ConsoleColor.Green, ConsoleColor.Black);
+Console.Clear();
 Console.WriteLine("--- TCP Socket Client ---");
 
 // адрес сервера и его порт
@@ -23,14 +26,17 @@ foreach (var msg in msges) {
     if (msg.StartsWith("#"))
         continue;
 
-    Console.Write($"TcpClient: \"{msg}\"");
-    TcpClient(port, IPAddress.Parse(ip), msg);
+    var str = msg.Trim();
+    Console.Write($"TcpClient: \"{str}\"");
+    TcpClient(port, IPAddress.Parse(ip), str);
     Console.WriteLine();
 } // foreach msg
 
 
 Console.Write("\n\nНажмите любую клавишу для продолжения...");
 Console.ReadKey(true);
+
+(Console.ForegroundColor, Console.BackgroundColor) = (ConsoleColor.DarkGray, ConsoleColor.Black);
 Console.WriteLine("\n\n");
 return;
 
@@ -75,7 +81,7 @@ void TcpClient(int portServer, IPAddress ipServer, string msg) {
     catch (Exception ex) {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"\n\n{ex.Message}\n\n");
-        Console.ForegroundColor = ConsoleColor.Gray;
+        Console.ForegroundColor = ConsoleColor.Green;
     } // catch
     finally {
         socket.Close();
