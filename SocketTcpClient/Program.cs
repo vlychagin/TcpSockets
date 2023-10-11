@@ -13,27 +13,36 @@ var ip = "127.0.0.1";
 int port = 8085;
 
 
-string[] msges = {
-     "date",
-     "host_name",
-     "pwd",
-     "list",
-     "mul 12.5 1.8",
-     "sum 2.7 8.4",
-     "solve 0 12 36",
-     "solve 1 12 36",
-     "solve 2 12 6",
-     "rename file1.ext file2.ext",
-     "rename index.html file1.ext",
-     "list",
-     "rename file1.ext index.html",
-     "list",
-     "delete file1.ext",
-     "delete index.html",
-     "shutdown"
- };
+var scriptFile = "test.srv";
+var msges = File.ReadAllLines(scriptFile);
+// {
+//     "date",
+//     "host_name",
+//     "pwd",
+//     "list",
+//     "mul 12.5 1.8",
+//     "sum 2.7 8.4",
+//     "solve 0 12 36",
+//     "solve 1 12 36",
+//     "solve 2 12 6",
+//     "rename file1.ext file2.ext",
+//     "rename index.html file1.ext",
+//     "list",
+//     "rename file1.ext index.html",
+//     "list",
+//     "delete file1.ext",
+//     "delete index.html",
+//     "list",
+//     "shutdown"
+// };
 
 foreach (var msg in msges) {
+    // обработка комментария
+    // строка, начинающаяся символом # - комментарий,
+    // такая строка не обрабатывается
+    if (msg.StartsWith("#"))
+        continue;
+
     Console.Write($"TcpClient: \"{msg}\"");
     TcpClient(port, IPAddress.Parse(ip), msg);
     Console.WriteLine();
@@ -47,7 +56,7 @@ return;
 
 
 // клиентские операции с TCP-сокетом
-void TcpClient (int portServer, IPAddress ipServer, string msg) {
+void TcpClient(int portServer, IPAddress ipServer, string msg) {
     // конечная точка для клиента - это сервер
     var ipPointServer = new IPEndPoint(ipServer, portServer);
 
