@@ -184,9 +184,33 @@ void TcpServer(int port, IPAddress ip) {
                     try {
                         File.Move(srcFileName, dstFileName);
                         answer = "Ok\n";
-                    } catch {
+                    }
+                    catch {
                         answer = "Not found\b";
                     } // try-catch
+                } // if
+                break;
+
+                // delete имяФайла – удаляет файл на сервере, в папке App_Files
+                // проекта (в папке исполняемого файла), сервер возвращает
+                // “Ok\n”, если файл был удален на сервере или строку
+                // "Not found\n" – если такого файла на сервере нет
+                case "delete":
+                if (tokens.Length != 2) {
+                    answer = "delete: invalid arguments number";
+                } else {
+                    path = $"{Environment.CurrentDirectory}\\App_Files";
+                    var fileName = path + "\\" + tokens[1];
+
+                    // попытка удаления, при успехе возваращаем клиенту "Ok",
+                    // при любой ошибке возваращаем клиенту "Not found"
+                    // Метод Delete() не выбрасывает исключений
+                    if (File.Exists(fileName)) {
+                        File.Delete(fileName);
+                        answer = "Ok\n";
+                    }else {
+                        answer = "Not found\b";
+                    } // if
                 } // if
                 break;
 

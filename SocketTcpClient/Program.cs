@@ -28,6 +28,8 @@ string[] msges = {
      "list",
      "rename file1.ext index.html",
      "list",
+     "delete file1.ext",
+     "delete index.html",
      "shutdown"
  };
 
