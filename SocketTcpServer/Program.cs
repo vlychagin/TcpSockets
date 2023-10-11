@@ -104,7 +104,7 @@ void TcpServer(int port, IPAddress ip) {
                 case "list":
                 path = $"{Environment.CurrentDirectory}\\App_Files";
                 answer = Directory.Exists(path)
-                    ? string.Join("", Directory.GetFiles(path)
+                    ? string.Join("\n", Directory.GetFiles(path)
                         .Select(f => Path.GetFileName(f)!)
                         .ToList())
                     : "not found";
@@ -117,8 +117,8 @@ void TcpServer(int port, IPAddress ip) {
                 if (tokens.Length != 3) {
                     answer = "mul: invalid arguments number";
                 } else {
-                    double number1 = double.Parse(tokens[1]);
-                    double number2 = double.Parse(tokens[2]);
+                    var number1 = double.Parse(tokens[1]);
+                    var number2 = double.Parse(tokens[2]);
                     answer = $"{number1:f5} * {number2:f5} = {number1 * number2:f5}";
                 } // if
                 break;
@@ -130,8 +130,8 @@ void TcpServer(int port, IPAddress ip) {
                 if (tokens.Length != 3) {
                     answer = "sum: invalid arguments number";
                 } else {
-                    double number1 = double.Parse(tokens[1]);
-                    double number2 = double.Parse(tokens[2]);
+                    var number1 = double.Parse(tokens[1]);
+                    var number2 = double.Parse(tokens[2]);
                     answer = $"{number1:f5} + {number2:f5} = {number1 + number2:f5}";
                 } // if
                 break;
@@ -166,7 +166,30 @@ void TcpServer(int port, IPAddress ip) {
                 case "shutdown":
                 answer = "halted";
                 break;
-                
+
+                // rename староеИмя новоеИмя – переименование файла в папке
+                // App_Files на сервере (в папке исполняемого файла), сервер
+                // возвращает “Ok\n”, если файл был переименован на сервере 
+                // или строку "Not found\n" – если такого файла на сервере нет
+                case "rename":
+                if (tokens.Length != 3) {
+                    answer = "rename: invalid arguments number";
+                } else {
+                    path = $"{Environment.CurrentDirectory}\\App_Files";
+                    var srcFileName = path + "\\" + tokens[1];
+                    var dstFileName = path + "\\" + tokens[2];
+
+                    // попытка переименования, при успехе возваращаем клиенту "Ok",
+                    // при любой ошибке возваращаем клиенту "Not found"
+                    try {
+                        File.Move(srcFileName, dstFileName);
+                        answer = "Ok\n";
+                    } catch {
+                        answer = "Not found\b";
+                    } // try-catch
+                } // if
+                break;
+
                 default:
                 // любой другой токен от клиента - просто выводим его в консоль
                 answer = $"{DateTime.Now} \"{sbr}\"";
@@ -182,13 +205,16 @@ void TcpServer(int port, IPAddress ip) {
             handler.Close();
 
             // завершение работы сервера
-            if (tokens[0] == "shutdown") break;
+            if (tokens[0] == "shutdown")
+                break;
         } // while
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"\n\n{ex.Message}\n\n");
         Console.ForegroundColor = ConsoleColor.Gray;
-    } finally {
+    }
+    finally {
         listenSocket.Close();
     } // try-catch-finally
 } // TcpServer

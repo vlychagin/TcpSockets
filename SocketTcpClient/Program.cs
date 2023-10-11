@@ -23,6 +23,11 @@ string[] msges = {
      "solve 0 12 36",
      "solve 1 12 36",
      "solve 2 12 6",
+     "rename file1.ext file2.ext",
+     "rename index.html file1.ext",
+     "list",
+     "rename file1.ext index.html",
+     "list",
      "shutdown"
  };
 
@@ -30,18 +35,8 @@ foreach (var msg in msges) {
     Console.Write($"TcpClient: \"{msg}\"");
     TcpClient(port, IPAddress.Parse(ip), msg);
     Console.WriteLine();
-}
+} // foreach msg
 
-
-/*
-while (true) {
-    Console.Write("\nКоманда серверу (выход - завершение работы): ");
-    var request = Console.ReadLine();
-    if (request == "выход")
-        break;
-    TcpClient(port, IPAddress.Parse(ip), request);
-} // while
-*/
 
 Console.Write("\n\nНажмите любую клавишу для продолжения...");
 Console.ReadKey(true);
