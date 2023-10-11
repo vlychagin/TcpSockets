@@ -193,33 +193,6 @@ void TcpServer(int port, IPAddress ip) {
                 } // if
                 break;
 
-                // upload имяФайла – клиент выбирает файл и отправляет его
-                // на сервер, сначала строка “Length ДлинаВБайтах\n”, затем
-                // байты файла, далее строка “Ok\n”, сервер сохраняет принятый
-                // файл в папку App_Files (в папке исполняемого файла) 
-                case "upload":
-                if (tokens.Length != 2) {
-                    answer = "upload: invalid arguments number";
-                } else {
-                    path = $"{Environment.CurrentDirectory}\\App_Files";
-                    var fileName = path + "\\" + tokens[1];
-                } // if
-                break;
-
-                // download имяФайла – сервер передает запрошенный файл
-                // из папки App_Files клиенту: строка "Ok ДлинаВБайтах\n"
-                // и затем передача байтов файла, далее строка “Ok\n”,
-                // если такой файл есть не сервере или строку "Not found\n",
-                // если такого файла на сервере нет 
-                case "download":
-                if (tokens.Length != 2) {
-                    answer = "download: invalid arguments number";
-                } else {
-                    path = $"{Environment.CurrentDirectory}\\App_Files";
-                    var fileName = path + "\\" + tokens[1];
-                } // if
-                break;
-
                 // delete имяФайла – удаляет файл на сервере, в папке App_Files
                 // проекта (в папке исполняемого файла), сервер возвращает
                 // “Ok\n”, если файл был удален на сервере или строку
@@ -237,7 +210,7 @@ void TcpServer(int port, IPAddress ip) {
                     if (File.Exists(fileName)) {
                         File.Delete(fileName);
                         answer = "Ok\n";
-                    } else {
+                    }else {
                         answer = "Not found\b";
                     } // if
                 } // if
