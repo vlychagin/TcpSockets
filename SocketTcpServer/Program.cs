@@ -186,10 +186,57 @@ void TcpServer(int port, IPAddress ip) {
                         answer = "Ok\n";
                     }
                     catch {
-                        answer = "Not found\b";
+                        answer = "Not found\n";
                     } // try-catch
                 } // if
                 break;
+
+                // upload имяФайла – клиент выбирает файл и отправляет его
+                // на сервер, сначала строка “Length ДлинаВБайтах\n”, затем
+                // байты файла, далее строка “Ok\n”, сервер сохраняет принятый
+                // файл в папку App_Files (в папке исполняемого файла) 
+                case "upload":
+                    if (tokens.Length != 2) {
+                        answer = "upload: invalid arguments number";
+                    } else {
+                        path = $"{Environment.CurrentDirectory}\\App_Files";
+                        var fileName = path + "\\" + tokens[1];
+
+                        // попытка загрузки файла на сервер
+                        // при успехе возвращаем клиенту "Ok"
+                        // при любой ошибке возвращаем клиенту "Fail"
+                        try {
+                            answer = "Ok\n";
+                        }
+                        catch {
+                            answer = "Fail\n";
+                        } // try-catch
+                    } // if
+                    break;
+
+                // download имяФайла – сервер передает запрошенный файл
+                // из папки App_Files клиенту: строка "Ok ДлинаВБайтах\n"
+                // и затем передача байтов файла, далее строка “Ok\n”, если
+                // такой файл есть не сервере или строку "Not found\n", если
+                // такого файла на сервере нет 
+                case "download":
+                    if (tokens.Length != 2) {
+                        answer = "download: invalid arguments number";
+                    } else {
+                        path = $"{Environment.CurrentDirectory}\\App_Files";
+                        var fileName = path + "\\" + tokens[1];
+
+                        // попытка выгрузки файла с сервера
+                        // при успехе возвращаем клиенту "Ok"
+                        // при любой ошибке возваращаем клиенту "Fail"
+                        try {
+                            answer = "Ok\n";
+                        }
+                        catch {
+                            answer = "Fail\n";
+                        } // try-catch
+                    } // if
+                    break;
 
                 // delete имяФайла – удаляет файл на сервере, в папке App_Files
                 // проекта (в папке исполняемого файла), сервер возвращает
